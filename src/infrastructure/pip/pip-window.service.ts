@@ -36,31 +36,11 @@ export async function openPipWindow(
   const width = options.width ?? 320
   const height = options.height ?? 200
 
-  // Document Picture-in-Picture API (Chrome 116+)
-  if ('documentPictureInPicture' in window) {
-    try {
-      const pipWindow = await (
-        window as Window & { documentPictureInPicture: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }
-      ).documentPictureInPicture.requestWindow({ width, height })
-
-      // Pip penceresine URL'yi yükle
-      pipWindow.location.href = url
-
-      let closeCallback: (() => void) | null = null
-      pipWindow.addEventListener('pagehide', () => closeCallback?.())
-
-      return {
-        close: () => pipWindow.close(),
-        onClose: (cb) => { closeCallback = cb },
-      }
-    } catch {
-      // Fallback'e geç
-    }
-  }
+  const absoluteUrl = new URL(url, window.location.origin).toString()
 
   // Fallback: popup pencere
   const popup = window.open(
-    url,
+    absoluteUrl,
     'deepfocus-pip',
     `width=${width},height=${height},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no`,
   )

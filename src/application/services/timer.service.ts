@@ -36,10 +36,14 @@ export function createTimerService(deps: TimerServiceDeps) {
     /**
      * Yeni bir focus/break oturumu başlatır.
      * @param mode - Timer modu
+     * @param completedPomodoros - O anki tamamlanmış görev sayısı (UI Sync)
      * @returns Başlatılan timer entity'si
      */
-    async start(mode: TimerMode): Promise<TimerEntity> {
-      const { timer } = await startFocusSession(timerRepo, { mode })
+    async start(mode: TimerMode, completedPomodoros?: number): Promise<TimerEntity> {
+      const { timer } = await startFocusSession(timerRepo, { 
+        mode, 
+        ...(completedPomodoros !== undefined ? { completedPomodoros } : {})
+      })
       broadcastTimerState({ type: 'TIMER_START', payload: timer, timestamp: Date.now() })
       return timer
     },

@@ -20,19 +20,25 @@ interface SettingsPanelProps {
 export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const { config, setConfig } = useTimer()
 
-  // Local state form değerleri (dakika cinsinden)
-  const [focus, setFocus] = useState(config.focusDuration.minutes.toString())
-  const [shortBreak, setShortBreak] = useState(config.shortBreakDuration.minutes.toString())
-  const [longBreak, setLongBreak] = useState(config.longBreakDuration.minutes.toString())
+  // Local state form değerleri
+  const [focusMin, setFocusMin] = useState(config.focusDuration.minutes.toString())
+  const [focusSec, setFocusSec] = useState((config.focusDuration.seconds % 60).toString())
+  const [shortBreakMin, setShortBreakMin] = useState(config.shortBreakDuration.minutes.toString())
+  const [shortBreakSec, setShortBreakSec] = useState((config.shortBreakDuration.seconds % 60).toString())
+  const [longBreakMin, setLongBreakMin] = useState(config.longBreakDuration.minutes.toString())
+  const [longBreakSec, setLongBreakSec] = useState((config.longBreakDuration.seconds % 60).toString())
   const [interval, setIntervalCount] = useState(config.longBreakInterval.toString())
   const [error, setError] = useState<string | null>(null)
 
   // Store'dan güncellemeleri al
   useEffect(() => {
     if (isOpen) {
-      setFocus(config.focusDuration.minutes.toString())
-      setShortBreak(config.shortBreakDuration.minutes.toString())
-      setLongBreak(config.longBreakDuration.minutes.toString())
+      setFocusMin(config.focusDuration.minutes.toString())
+      setFocusSec((config.focusDuration.seconds % 60).toString())
+      setShortBreakMin(config.shortBreakDuration.minutes.toString())
+      setShortBreakSec((config.shortBreakDuration.seconds % 60).toString())
+      setLongBreakMin(config.longBreakDuration.minutes.toString())
+      setLongBreakSec((config.longBreakDuration.seconds % 60).toString())
       setIntervalCount(config.longBreakInterval.toString())
       setError(null)
     }
@@ -42,9 +48,12 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     e.preventDefault()
 
     try {
-      const parsedFocus = parseInt(focus, 10)
-      const parsedShortBreak = parseInt(shortBreak, 10)
-      const parsedLongBreak = parseInt(longBreak, 10)
+      const parsedFocusMin = parseInt(focusMin, 10) || 0
+      const parsedFocusSec = parseInt(focusSec, 10) || 0
+      const parsedShortBreakMin = parseInt(shortBreakMin, 10) || 0
+      const parsedShortBreakSec = parseInt(shortBreakSec, 10) || 0
+      const parsedLongBreakMin = parseInt(longBreakMin, 10) || 0
+      const parsedLongBreakSec = parseInt(longBreakSec, 10) || 0
       const parsedInterval = parseInt(interval, 10)
 
       if (parsedInterval < 1 || parsedInterval > 10) {
@@ -52,9 +61,9 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       }
 
       setConfig({
-        focusDuration: createDuration(parsedFocus),
-        shortBreakDuration: createDuration(parsedShortBreak),
-        longBreakDuration: createDuration(parsedLongBreak),
+        focusDuration: createDuration(parsedFocusMin, parsedFocusSec),
+        shortBreakDuration: createDuration(parsedShortBreakMin, parsedShortBreakSec),
+        longBreakDuration: createDuration(parsedLongBreakMin, parsedLongBreakSec),
         longBreakInterval: parsedInterval,
       })
 
@@ -70,9 +79,12 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   }
 
   const handleReset = () => {
-    setFocus(TIMER_DEFAULTS.focusDuration.minutes.toString())
-    setShortBreak(TIMER_DEFAULTS.shortBreakDuration.minutes.toString())
-    setLongBreak(TIMER_DEFAULTS.longBreakDuration.minutes.toString())
+    setFocusMin(TIMER_DEFAULTS.focusDuration.minutes.toString())
+    setFocusSec((TIMER_DEFAULTS.focusDuration.seconds % 60).toString())
+    setShortBreakMin(TIMER_DEFAULTS.shortBreakDuration.minutes.toString())
+    setShortBreakSec((TIMER_DEFAULTS.shortBreakDuration.seconds % 60).toString())
+    setLongBreakMin(TIMER_DEFAULTS.longBreakDuration.minutes.toString())
+    setLongBreakSec((TIMER_DEFAULTS.longBreakDuration.seconds % 60).toString())
     setIntervalCount(TIMER_DEFAULTS.longBreakInterval.toString())
   }
 
@@ -88,44 +100,86 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
-            Süreler (Dakika)
+            Süreler (Dk : Sn)
           </h3>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="flex flex-col gap-1">
-              <label htmlFor="focus-input" className="text-xs text-[var(--color-text-secondary)]">Odaklan</label>
-              <input
-                id="focus-input"
-                type="number"
-                min={MIN_FOCUS_MINUTES}
-                max={MAX_FOCUS_MINUTES}
-                value={focus}
-                onChange={(e) => setFocus(e.target.value)}
-                className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
-              />
+              <label htmlFor="focus-min-input" className="text-xs text-[var(--color-text-secondary)]">Odaklan</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="focus-min-input"
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={focusMin}
+                  onChange={(e) => setFocusMin(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Dk"
+                />
+                <span className="text-[var(--color-text-secondary)]">:</span>
+                <input
+                  id="focus-sec-input"
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={focusSec}
+                  onChange={(e) => setFocusSec(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Sn"
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="sb-input" className="text-xs text-[var(--color-text-secondary)]">Kısa Mola</label>
-              <input
-                id="sb-input"
-                type="number"
-                min="1"
-                max="60"
-                value={shortBreak}
-                onChange={(e) => setShortBreak(e.target.value)}
-                className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
-              />
+              <label htmlFor="sb-min-input" className="text-xs text-[var(--color-text-secondary)]">Kısa Mola</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="sb-min-input"
+                  type="number"
+                  min="0"
+                  max="60"
+                  value={shortBreakMin}
+                  onChange={(e) => setShortBreakMin(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Dk"
+                />
+                <span className="text-[var(--color-text-secondary)]">:</span>
+                <input
+                  id="sb-sec-input"
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={shortBreakSec}
+                  onChange={(e) => setShortBreakSec(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Sn"
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="lb-input" className="text-xs text-[var(--color-text-secondary)]">Uzun Mola</label>
-              <input
-                id="lb-input"
-                type="number"
-                min="1"
-                max="120"
-                value={longBreak}
-                onChange={(e) => setLongBreak(e.target.value)}
-                className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
-              />
+              <label htmlFor="lb-min-input" className="text-xs text-[var(--color-text-secondary)]">Uzun Mola</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="lb-min-input"
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={longBreakMin}
+                  onChange={(e) => setLongBreakMin(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Dk"
+                />
+                 <span className="text-[var(--color-text-secondary)]">:</span>
+                 <input
+                  id="lb-sec-input"
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={longBreakSec}
+                  onChange={(e) => setLongBreakSec(e.target.value)}
+                  className="w-full rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  placeholder="Sn"
+                />
+              </div>
             </div>
           </div>
         </div>

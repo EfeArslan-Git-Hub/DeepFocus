@@ -16,6 +16,7 @@ import { TimerDisplay } from './TimerDisplay'
 import { TimerModeSelector } from './TimerModeSelector'
 import { TimerControls } from './TimerControls'
 import { PomodoroDots } from './PomodoroDots'
+import { SessionCounterWidget } from '../stats/SessionCounterWidget'
 import { MODE_COLORS } from '@/shared/constants/timer.constants'
 import { cn } from '@/shared/utils/cn.utils'
 import type { TimerMode } from '@/domain/entities/timer.entity'
@@ -107,6 +108,9 @@ export function TimerContainer({ className }: TimerContainerProps) {
         boxShadow: `0 24px 64px ${color}15, 0 4px 16px rgba(0,0,0,0.3)`,
       }}
     >
+      {/* Günlük Tamamlanan Oturumlar Paneli */}
+      <SessionCounterWidget className="absolute -top-5 z-20 shadow-lg" />
+
       {/* Mod seçici */}
       <TimerModeSelector
         activeMode={mode}

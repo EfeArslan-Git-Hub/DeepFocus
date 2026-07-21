@@ -8,7 +8,7 @@
  */
 
 /** Minimum süre (dakika) */
-const MIN_DURATION_MINUTES = 1
+const MIN_DURATION_MINUTES = 0
 
 /** Maksimum süre (dakika) */
 const MAX_DURATION_MINUTES = 120
@@ -26,24 +26,29 @@ export interface Duration {
  * Geçersiz değerlerde hata fırlatır.
  *
  * @param minutes - Dakika cinsinden süre
+ * @param additionalSeconds - Ekstra saniye cinsinden süre (varsayılan: 0)
  * @returns Doğrulanmış Duration nesnesi
  * @throws {RangeError} Süre geçerli aralıkta değilse
  *
  * @example
  * ```ts
- * const duration = createDuration(25) // { minutes: 25, seconds: 1500 }
+ * const duration = createDuration(25, 30) // { minutes: 25, seconds: 1530 }
  * ```
  */
-export function createDuration(minutes: number): Duration {
-  if (!Number.isFinite(minutes) || minutes < MIN_DURATION_MINUTES || minutes > MAX_DURATION_MINUTES) {
+export function createDuration(minutes: number, additionalSeconds: number = 0): Duration {
+  // Toplam süre saniye cinsinden hesaplanır
+  const totalSeconds = (minutes * 60) + additionalSeconds
+  const totalMinutesFloat = totalSeconds / 60
+
+  if (!Number.isFinite(minutes) || !Number.isFinite(additionalSeconds) || totalMinutesFloat < MIN_DURATION_MINUTES || totalMinutesFloat > MAX_DURATION_MINUTES) {
     throw new RangeError(
-      `Duration must be between ${MIN_DURATION_MINUTES} and ${MAX_DURATION_MINUTES} minutes. Got: ${minutes}`,
+      `Duration must be between ${MIN_DURATION_MINUTES} and ${MAX_DURATION_MINUTES} minutes limit. Got: ${minutes}m ${additionalSeconds}s`,
     )
   }
 
   return {
-    minutes,
-    seconds: minutes * 60,
+    minutes: Math.floor(totalMinutesFloat),
+    seconds: totalSeconds,
   }
 }
 

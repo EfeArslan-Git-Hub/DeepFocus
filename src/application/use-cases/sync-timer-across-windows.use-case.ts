@@ -17,6 +17,11 @@ export type WindowSyncMessageType =
   | 'TIMER_RESET'
   | 'TIMER_COMPLETE'
   | 'REQUEST_STATE'
+  | 'COMMAND_START'
+  | 'COMMAND_PAUSE'
+  | 'COMMAND_RESET'
+  | 'PIP_CONNECTED'
+  | 'PIP_DISCONNECTED'
 
 /** BroadcastChannel mesaj formatı */
 export interface WindowSyncMessage {

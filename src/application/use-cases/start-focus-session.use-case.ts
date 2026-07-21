@@ -17,6 +17,8 @@ export interface StartFocusSessionInput {
   readonly mode: TimerMode
   /** Özelleştirilmiş konfigürasyon (yoksa varsayılan kullanılır) */
   readonly config?: Partial<TimerConfig>
+  /** Mevcut tamamlanan pomodoro sayısı (UI senkronizasyonu için) */
+  readonly completedPomodoros?: number
 }
 
 /** StartFocusSession use-case'inin çıktısı */
@@ -66,7 +68,7 @@ export async function startFocusSession(
     remainingSeconds: totalSeconds,
     totalSeconds,
     status: 'running',
-    completedPomodoros: 0,
+    completedPomodoros: input.completedPomodoros ?? 0,
     config,
     createdAt: new Date(),
     updatedAt: new Date(),

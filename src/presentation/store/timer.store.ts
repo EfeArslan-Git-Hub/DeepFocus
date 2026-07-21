@@ -166,13 +166,16 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
   },
 
   setConfig: (config) => {
-    const { mode, status } = get()
-    // Eğer timer çalışmıyorsa kalan süreyi de güncelle
+    const { mode, status, remainingSeconds } = get()
+    const totalSeconds = getTotalSecondsForMode(mode, config)
+    
+    // Eğer timer çalışmıyorsa kalan süreyi de güncelle ve sıfırla
     if (status === 'idle') {
-      const totalSeconds = getTotalSecondsForMode(mode, config)
       set({ config, totalSeconds, remainingSeconds: totalSeconds })
     } else {
-      set({ config })
+      // Progress bar (totalSeconds) güncellensin ama remaining süre yeni süreyi geçmesin
+      const adjRemaining = Math.min(remainingSeconds, totalSeconds)
+      set({ config, totalSeconds, remainingSeconds: adjRemaining })
     }
   },
 

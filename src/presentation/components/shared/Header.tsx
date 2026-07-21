@@ -9,10 +9,16 @@
 import React, { useState } from 'react'
 import { ThemesPanel } from '@/presentation/components/theme/ThemesPanel'
 import { SettingsPanel } from '@/presentation/components/settings/SettingsPanel'
+import { AudioPanel } from '@/presentation/components/audio/AudioPanel'
+import { useAudioStore } from '@/presentation/store/audio.store'
+import { openPipWindow } from '@/infrastructure/pip/pip-window.service'
 
 export function Header() {
   const [isThemesOpen, setIsThemesOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isAudioOpen, setIsAudioOpen] = useState(false)
+  
+  const { isPlaying } = useAudioStore()
 
   return (
     <>
@@ -21,7 +27,40 @@ export function Header() {
           <span className="text-xl text-[var(--color-text-primary)] drop-shadow-md">Deep<span className="text-[var(--color-accent)]">Focus</span></span>
         </div>
 
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-2 sm:gap-4">
+          <button
+            onClick={() => setIsAudioOpen(true)}
+            className="flex items-center gap-2 rounded-full bg-[var(--color-glass-bg)] px-3 py-2 text-sm font-medium text-[var(--color-text-primary)] shadow-sm backdrop-blur-md transition-colors hover:bg-[var(--color-glass-border)] sm:px-4"
+            aria-label="Ortam Sesleri"
+          >
+            <span className="relative">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill={isPlaying ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+              {isPlaying && (
+                <span className="absolute -right-1 -top-1 flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-accent)] opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-accent)]"></span>
+                </span>
+              )}
+            </span>
+            <span className="hidden sm:inline">Sesler</span>
+          </button>
+          
+          <button
+            onClick={() => void openPipWindow('/pip-timer')}
+            className="flex items-center gap-2 rounded-full bg-[var(--color-glass-bg)] px-3 py-2 text-sm font-medium text-[var(--color-text-primary)] shadow-sm backdrop-blur-md transition-colors hover:bg-[var(--color-glass-border)] sm:px-4"
+            aria-label="Yüzer Pencere"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <rect x="12" y="14" width="7" height="5" rx="1" />
+            </svg>
+            <span className="hidden sm:inline">PiP</span>
+          </button>
+          
           <button
             onClick={() => setIsThemesOpen(true)}
             className="flex items-center gap-2 rounded-full bg-[var(--color-glass-bg)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] shadow-sm backdrop-blur-md transition-colors hover:bg-[var(--color-glass-border)]"
@@ -49,6 +88,7 @@ export function Header() {
 
       <ThemesPanel isOpen={isThemesOpen} onClose={() => setIsThemesOpen(false)} />
       <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <AudioPanel isOpen={isAudioOpen} onClose={() => setIsAudioOpen(false)} />
     </>
   )
 }
