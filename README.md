@@ -1,6 +1,7 @@
 # DeepFocus
 
-> Minimalist ve estetik Pomodoro/odaklanma zamanlayıcısı. [Flocus.com](https://flocus.com) ilhamıyla tasarlandı.
+> Minimalist ve estetik Pomodoro/odaklanma zamanlayıcısı.
+> [online demo](https://deep-focus-six.vercel.app/)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/EfeArslan-Git-Hub/DeepFocus)
 
