@@ -25,6 +25,11 @@ export interface TimerConfig {
   readonly longBreakDuration: Duration
   /** Kaç pomodoro'dan sonra uzun mola verileceği */
   readonly longBreakInterval: number
+  /** Ortam efektleri konfigürasyonu (opsiyonel - geriye dönük uyumluluk) */
+  readonly environment?: {
+    readonly enabled: boolean
+    readonly type: 'rain' | 'snow'
+  }
 }
 
 /** Timer Entity — mevcut oturum durumunu temsil eder */

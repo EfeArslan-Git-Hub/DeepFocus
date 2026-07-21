@@ -15,6 +15,10 @@ export const TIMER_DEFAULTS: TimerConfig = {
   shortBreakDuration: createDuration(5),
   longBreakDuration: createDuration(15),
   longBreakInterval: 4,
+  environment: {
+    enabled: false,
+    type: 'rain',
+  },
 } as const
 
 /** Minimum focus süresi (dakika) */

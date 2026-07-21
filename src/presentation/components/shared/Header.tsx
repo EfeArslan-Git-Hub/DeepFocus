@@ -23,8 +23,22 @@ export function Header() {
   return (
     <>
       <header className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between p-6">
-        <div className="flex items-center gap-2 font-bold tracking-tight">
-          <span className="text-xl text-[var(--color-text-primary)] drop-shadow-md">Deep<span className="text-[var(--color-accent)]">Focus</span></span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center font-bold tracking-tight">
+            <span className="text-xl text-[var(--color-text-primary)] drop-shadow-md">Deep<span className="text-[var(--color-accent)]">Focus</span></span>
+          </div>
+          
+          {/* Portfolio Linki (Yazar İmzası) */}
+          <span className="text-[var(--color-text-secondary)] opacity-30 select-none text-xs hidden sm:inline-block">|</span>
+          <a
+            href="https://efe-arslan-portfolio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] font-medium text-[var(--color-text-secondary)] opacity-60 hover:opacity-100 hover:text-[var(--color-accent)] transition-colors hidden sm:inline-block"
+            title="Geliştiricinin Portfolyosunu Görüntüle"
+          >
+            by Efe Arslan
+          </a>
         </div>
 
         <nav className="flex items-center gap-2 sm:gap-4">

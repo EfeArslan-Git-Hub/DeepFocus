@@ -28,6 +28,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
   const [longBreakMin, setLongBreakMin] = useState(config.longBreakDuration.minutes.toString())
   const [longBreakSec, setLongBreakSec] = useState((config.longBreakDuration.seconds % 60).toString())
   const [interval, setIntervalCount] = useState(config.longBreakInterval.toString())
+  const [envEnabled, setEnvEnabled] = useState(config.environment?.enabled ?? false)
+  const [envType, setEnvType] = useState<'rain' | 'snow'>(config.environment?.type ?? 'rain')
   const [error, setError] = useState<string | null>(null)
 
   // Store'dan güncellemeleri al
@@ -40,6 +42,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       setLongBreakMin(config.longBreakDuration.minutes.toString())
       setLongBreakSec((config.longBreakDuration.seconds % 60).toString())
       setIntervalCount(config.longBreakInterval.toString())
+      setEnvEnabled(config.environment?.enabled ?? false)
+      setEnvType(config.environment?.type ?? 'rain')
       setError(null)
     }
   }, [isOpen, config])
@@ -65,6 +69,10 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         shortBreakDuration: createDuration(parsedShortBreakMin, parsedShortBreakSec),
         longBreakDuration: createDuration(parsedLongBreakMin, parsedLongBreakSec),
         longBreakInterval: parsedInterval,
+        environment: {
+          enabled: envEnabled,
+          type: envType
+        }
       })
 
       onClose()
@@ -86,6 +94,8 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     setLongBreakMin(TIMER_DEFAULTS.longBreakDuration.minutes.toString())
     setLongBreakSec((TIMER_DEFAULTS.longBreakDuration.seconds % 60).toString())
     setIntervalCount(TIMER_DEFAULTS.longBreakInterval.toString())
+    setEnvEnabled(TIMER_DEFAULTS.environment?.enabled ?? false)
+    setEnvType(TIMER_DEFAULTS.environment?.type ?? 'rain')
   }
 
   return (
@@ -201,6 +211,41 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                 onChange={(e) => setIntervalCount(e.target.value)}
                 className="w-1/2 rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
               />
+          </div>
+        </div>
+
+        {/* Ortam Efektleri */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            Ortam Efektleri
+          </h3>
+          <div className="flex flex-col gap-3">
+             <label className="flex items-center gap-3 cursor-pointer">
+               <div className="relative">
+                 <input 
+                   type="checkbox" 
+                   className="sr-only peer" 
+                   checked={envEnabled}
+                   onChange={(e) => setEnvEnabled(e.target.checked)}
+                 />
+                 <div className="w-11 h-6 bg-gray-200/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-accent)]"></div>
+               </div>
+               <span className="text-sm font-medium text-[var(--color-text-primary)]">Arka Plan Görsel Efektlerini Aç</span>
+             </label>
+
+             {envEnabled && (
+                <div className="flex items-center gap-3 mt-1 pl-1">
+                  <span className="text-xs text-[var(--color-text-secondary)]">Efekt Türü:</span>
+                  <select
+                    value={envType}
+                    onChange={(e) => setEnvType(e.target.value as 'rain' | 'snow')}
+                    className="rounded-md border border-[var(--color-glass-border)] bg-[var(--color-glass-bg)] px-3 py-1 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none"
+                  >
+                    <option value="rain">Yağmur</option>
+                    <option value="snow">Kar</option>
+                  </select>
+                </div>
+             )}
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import { TimerContainer } from '@/presentation/components/timer'
 import { TasksContainer } from '@/presentation/components/task'
 import { StatsDashboard } from '@/presentation/components/stats'
 import { Header } from '@/presentation/components/shared/Header'
+import { EnvironmentLayer } from '@/presentation/components/shared/EnvironmentLayer'
 
 export default function HomePage() {
   return (
@@ -11,8 +12,11 @@ export default function HomePage() {
       {/* Arka plan gradyan (Tema değişkenleri ile dinamik) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-br from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)] transition-colors duration-700"
+        className="pointer-events-none fixed inset-0 -z-20 bg-gradient-to-br from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)] transition-colors duration-700"
       />
+
+      {/* Performans GPU Optimizeli Canvas Animasyon Katmanı */}
+      <EnvironmentLayer />
 
       <div className="relative z-10 w-full max-w-md">
         {/* Timer Ana Bileşen */}
@@ -21,7 +25,6 @@ export default function HomePage() {
         {/* Görevler Modülü */}
         <TasksContainer />
 
-        {/* İstatistikler Modülü */}
         <StatsDashboard />
       </div>
     </main>
